@@ -38,6 +38,8 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - restore_cache:
+          keys: [frontend-build-new]
       - run:
           name: Build front-end
           command: |
@@ -46,7 +48,7 @@ jobs:
             npm run build:prod
       - save_cache:
           paths: [frontend/node_modules]
-          key: frontend-build
+          key: frontend-build-new
 
   build-backend:
     docker:
@@ -71,7 +73,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build]
+          keys: [frontend-build-new]
       - run:
           name: Test front-end
           command: |
@@ -97,7 +99,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build]
+          keys: [frontend-build-new]
       - run:
           name: Audit front-end
           command: |
