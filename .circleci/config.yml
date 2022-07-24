@@ -24,6 +24,7 @@ commands:
           name: Destroy environments
           when: << parameters.when >>
           command: |
+            aws s3 rm "s3://udapeople-<< parameters.id >>" --recursive
             aws cloudformation delete-stack  \
               --stack-name "udapeople-backend-<< parameters.id >>"
             aws cloudformation delete-stack  \
