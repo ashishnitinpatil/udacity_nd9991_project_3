@@ -6,10 +6,12 @@ commands:
     parameters:
       id:
         type: string
+      when:
+        type: string
     steps:
       - run:
           name: Destroy environments
-          when: on_fail
+          when: << parameters.when >>
           command: |
             aws cloudformation delete-stack  \
               --stack-name "udapeople-backend-<< parameters.id >>
