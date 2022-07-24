@@ -1,6 +1,15 @@
 ---
+  - name: "npm install"
+    community.general.npm:
+      path: ../../backend
+
+  - name: "stop anything that might already be running"
+    become: true
+    command: pm2 stop default
+    ignore_errors: true
+
   - name: "start server"
     become: true
-    command: pm2 start -f ./dist/main.js
+    command: pm2 start npm -- start
     args:
       chdir: ../../backend
