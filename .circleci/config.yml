@@ -194,7 +194,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apt update && apt install -y tar gzip unzip curl
+            apt update && apt install -y tar gzip unzip curl openssh-client
             python3 -m pip install --upgrade ansible
       - install_awscli
       - run:
@@ -270,7 +270,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apt update && apt install -y tar gzip
+            apt update && apt install -y tar gzip openssh-client
             python3 -m pip install --upgrade ansible
       - run:
           name: Deploy backend
