@@ -167,7 +167,7 @@ jobs:
   
   configure-infrastructure:
     docker:
-      - image: amazon/aws-cli
+      - image: python:3.10-slim-buster
     steps:
       - checkout
       - add_ssh_keys:
@@ -178,7 +178,7 @@ jobs:
           name: Install dependencies
           working_directory: ./.circleci/ansible
           command: |
-            yum install -y tar gzip python3
+            apt install -y tar gzip
             python3 -m pip install --user ansible
       - run:
           name: Configure server
