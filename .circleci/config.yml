@@ -14,9 +14,9 @@ commands:
           when: << parameters.when >>
           command: |
             aws cloudformation delete-stack  \
-              --stack-name "udapeople-backend-<< parameters.id >>
+              --stack-name "udapeople-backend-<< parameters.id >>"
             aws cloudformation delete-stack  \
-              --stack-name "udapeople-frontend-<< parameters.id >>
+              --stack-name "udapeople-frontend-<< parameters.id >>"
 
   revert_migrations:
     description: Revert the last migration if successfully run in the current workflow.
