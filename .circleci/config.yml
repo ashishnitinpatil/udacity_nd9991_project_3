@@ -11,6 +11,9 @@ executors:
     docker:
       - image: amazon/aws-cli
 
+orbs:
+  aws-cli: circleci/aws-cli@3.1
+
 commands:
   destroy_environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -49,18 +52,6 @@ commands:
               npm install
               npm run migrations:revert
             fi
-
-  install_awscli:
-    description: Install AWS CLI (assuming Debian Buster)
-    steps:
-      - run:
-          name: Install AWS CLI
-          working_directory: /tmp
-          command: |
-            apt update && apt install -y unzip curl
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            ./aws/install
 
 jobs:
   build-frontend:
@@ -196,7 +187,8 @@ jobs:
           command: |
             apt update && apt install -y tar gzip unzip curl openssh-client
             python3 -m pip install --upgrade ansible
-      - install_awscli
+      - aws-cli/setup:
+          profile-name: default
       - run:
           name: Configure server
           working_directory: ./.circleci/ansible
@@ -210,7 +202,8 @@ jobs:
     executor: node
     steps:
       - checkout
-      - install_awscli
+      - aws-cli/setup:
+          profile-name: default
       - run:
           name: Run migrations
           command: |
@@ -233,7 +226,8 @@ jobs:
     executor: node
     steps:
       - checkout
-      - install_awscli
+      - aws-cli/setup:
+          profile-name: default
       - attach_workspace:
           at: .
       - run:
@@ -264,7 +258,8 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints: ["59:be:de:47:40:30:73:2c:51:04:33:9a:dc:4a:86:d5"]
-      - install_awscli
+      - aws-cli/setup:
+          profile-name: default
       - attach_workspace:
           at: .
       - run:
@@ -288,7 +283,8 @@ jobs:
     executor: python
     steps:
       - checkout
-      - install_awscli
+      - aws-cli/setup:
+          profile-name: default
       - run:
           name: Backend smoke test.
           command: |
