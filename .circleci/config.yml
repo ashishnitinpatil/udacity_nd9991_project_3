@@ -46,8 +46,8 @@ commands:
           when: << parameters.when >>
           working_directory: ./backend
           command: |
-            SUCCESS = $(curl --insecure "https://kvdb.io/LuUYJe6EqD3AtxHk4GRz28/migration_<< parameters.id >>":-0)
-            if (( $SUCCESS==1 ))
+            SUCCESS=$(curl --insecure "https://kvdb.io/LuUYJe6EqD3AtxHk4GRz28/migration_<< parameters.id >>":-0)
+            if [[ "$SUCCESS" == "1" ]]
             then
               npm install
               npm run migrations:revert
