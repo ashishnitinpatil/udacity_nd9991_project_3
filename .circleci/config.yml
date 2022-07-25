@@ -258,15 +258,15 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints: ["59:be:de:47:40:30:73:2c:51:04:33:9a:dc:4a:86:d5"]
-      - aws-cli/setup:
-          profile-name: default
       - attach_workspace:
           at: .
       - run:
           name: Install dependencies
           command: |
-            apt update && apt install -y tar gzip openssh-client
+            apt update && apt install -y tar gzip curl openssh-client
             python3 -m pip install --upgrade ansible
+      - aws-cli/setup:
+          profile-name: default
       - run:
           name: Deploy backend
           working_directory: ./.circleci/ansible
