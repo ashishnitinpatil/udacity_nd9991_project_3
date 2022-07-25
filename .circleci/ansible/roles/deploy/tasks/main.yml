@@ -8,7 +8,7 @@
 
   - name: "stop anything that might already be running"
     become: true
-    command: pm2 stop default
+    command: pm2 stop all
     ignore_errors: true
 
   - name: "start server"
