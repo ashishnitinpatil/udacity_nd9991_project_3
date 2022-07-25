@@ -284,6 +284,10 @@ jobs:
     executor: python
     steps:
       - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            apt update && apt install -y unzip curl
       - aws-cli/setup:
           profile-name: default
       - run:
