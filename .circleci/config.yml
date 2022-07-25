@@ -67,7 +67,8 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - frontend
+            - frontend/node_modules
+            - frontend/dist
 
   build-backend:
     executor: node
@@ -82,7 +83,8 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - backend
+            - backend/node_modules
+            - backend/dist
 
   test-frontend:
     executor: node
