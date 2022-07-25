@@ -46,7 +46,7 @@ commands:
           when: << parameters.when >>
           working_directory: ./backend
           command: |
-            SUCCESS = $(curl "https://kvdb.io/LuUYJe6EqD3AtxHk4GRz28/migration_<< parameters.id >>":-0)
+            SUCCESS = $(curl --insecure "https://kvdb.io/LuUYJe6EqD3AtxHk4GRz28/migration_<< parameters.id >>":-0)
             if (( $SUCCESS==1 ))
             then
               npm install
@@ -216,7 +216,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-              curl https://kvdb.io/LuUYJe6EqD3AtxHk4GRz28/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
+              curl --insecure https://kvdb.io/LuUYJe6EqD3AtxHk4GRz28/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
             fi
       - destroy_environment:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
