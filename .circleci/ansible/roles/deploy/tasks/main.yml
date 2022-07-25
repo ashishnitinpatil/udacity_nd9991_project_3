@@ -1,8 +1,10 @@
 ---
-  - name: "npm install"
-    become: true
-    community.general.npm:
-      path: ../../backend
+  - name: "copy backend"
+    become: yes
+    synchronize:
+      src: ../../backend/
+      dest: /home/ubuntu/udapeople
+      recursive: true
 
   - name: "stop anything that might already be running"
     become: true
@@ -11,6 +13,6 @@
 
   - name: "start server"
     become: true
-    command: pm2 start npm -- start
+    command: pm2 start "npm run start"
     args:
-      chdir: ../../backend
+      chdir: /home/ubuntu/udapeople
