@@ -58,80 +58,78 @@ jobs:
     executor: node
     steps:
       - checkout
-      - restore_cache:
-          keys: [frontend-build-new]
       - run:
           name: Build front-end
+          working_directory: ./frontend
           command: |
-            cd frontend
             npm install
             npm run build:prod
-      - save_cache:
-          paths: [frontend/node_modules]
-          key: frontend-build-new
+      - persist_to_workspace:
+          root: .
+          paths:
+            - frontend
 
   build-backend:
     executor: node
     steps:
       - checkout
-      - restore_cache:
-          keys: [backend-build]
       - run:
           name: Back-end build
+          working_directory: ./backend
           command: |
-            cd backend
             npm install
             npm run build
-      - save_cache:
-          paths: [backend/node_modules]
-          key: backend-build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - backend
 
   test-frontend:
     executor: node
     steps:
       - checkout
-      - restore_cache:
-          keys: [frontend-build-new]
+      - attach_workspace:
+          at: .
       - run:
           name: Test front-end
+          working_directory: ./frontend
           command: |
-            cd frontend
             npm run test
   
   test-backend:
     executor: node
     steps:
       - checkout
-      - restore_cache:
-          keys: [backend-build]
+      - attach_workspace:
+          at: .
       - run:
           name: Test back-end
+          working_directory: ./backend
           command: |
-            cd backend
             npm run test
   
   scan-frontend:
     executor: node
     steps:
       - checkout
-      - restore_cache:
-          keys: [frontend-build-new]
+      - attach_workspace:
+          at: .
       - run:
           name: Audit front-end
+          working_directory: ./frontend
           command: |
-            cd frontend
             npm audit --audit-level=critical
   
   scan-backend:
     executor: node
     steps:
       - checkout
-      - restore_cache:
-          keys: [backend-build]
+      - attach_workspace:
+          at: .
       - run:
           name: Audit back-end
+          working_directory: ./backend
           command: |
-            cd backend
             npm audit --audit-level=critical
   
   deploy-infrastructure:
@@ -204,12 +202,12 @@ jobs:
       - checkout
       - aws-cli/setup:
           profile-name: default
+      - attach_workspace:
+          at: .
       - run:
           name: Run migrations
+          working_directory: ./backend
           command: |
-            cd backend
-            npm install
-            # Run and save the migration output
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
       - run:
@@ -242,8 +240,7 @@ jobs:
           name: Deploy frontend objects
           working_directory: ./frontend
           command: |
-            npm install
-            npm run build
+            npm run build:prod
             aws s3 cp dist "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
             echo "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}"
       - destroy_environment:
@@ -290,6 +287,8 @@ jobs:
             apt update && apt install -y unzip curl
       - aws-cli/setup:
           profile-name: default
+      - attach_workspace:
+          at: .
       - run:
           name: Backend smoke test.
           command: |
