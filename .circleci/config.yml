@@ -360,10 +360,13 @@ jobs:
           command: |
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
+              echo "$OldWorkflowID does not match ${STACKS[@]} => delete old stacks"
               aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
               aws cloudformation delete-stack --stack-name "udapeople-cloudfront-${OldWorkflowID}"
+            else
+              echo "$OldWorkflowID matches ${STACKS[@]} => nothing needs to be done..."
             fi
 
 workflows:
