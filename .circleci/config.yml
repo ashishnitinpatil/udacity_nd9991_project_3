@@ -330,7 +330,10 @@ jobs:
               --use-previous-template \
               --stack-name udapeople-cloudfront \
               --parameters ParameterKey=WorkflowID,ParameterValue=${CIRCLE_WORKFLOW_ID:0:7},UsePreviousValue=false
-            export distributionId=$(aws cloudformation describe-stacks --stack-name udapeople-cloudfront --query "Stacks[0].Outputs[?OutputKey=='CloudFrontDistributionID'].OutputValue" --output text_
+            export distributionId=$(aws cloudformation describe-stacks \
+                --stack-name udapeople-cloudfront \
+                --query "Stacks[0].Outputs[?OutputKey=='CloudFrontDistributionID'].OutputValue" \
+                --output text)
             echo Distribution ID: $distributionId
             aws cloudfront create-invalidation --distribution-id $distributionId --paths /*
       - destroy_environment:
@@ -345,7 +348,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Get old stack workflow id
+          name: Remove old stacks and files
           command: |
             export OldWorkflowID=$(aws cloudformation \
                 list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
@@ -355,9 +358,6 @@ jobs:
             export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
                 --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
             echo Stack names: "${STACKS[@]}"
-      - run:
-          name: Remove old stacks and files
-          command: |
             if [[ "${OldWorkflowID}" && "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
               echo "$OldWorkflowID does not match ${STACKS[@]} => delete old stacks"
